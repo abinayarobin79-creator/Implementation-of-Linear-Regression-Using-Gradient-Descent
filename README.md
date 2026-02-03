@@ -20,64 +20,52 @@ Program to implement the linear regression using gradient descent.
 Developed by: Abinaya R
 RegisterNumber:  212225230004
 */
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
-# Sample training data (Population of City, Profit)
-X = np.array([6.1101, 5.5277, 8.5186, 7.0032, 5.8598, 8.3829])
-y = np.array([17.592, 9.1302, 13.662, 11.854, 6.8233, 13.662])
-
-# Number of samples
-m = len(y)
-
-# Add column of 1s for bias (intercept) term
-X_b = np.c_[np.ones((m, 1)), X]
-
-# Initialize parameters (theta0, theta1)
-theta = np.zeros(2)
-
-# Gradient Descent settings
-alpha = 0.01
-iterations = 1500
-
-# Cost function
-def compute_cost(X, y, theta):
-    m = len(y)
-    predictions = X.dot(theta)
-    cost = (1 / (2 * m)) * np.sum((predictions - y) ** 2)
-    return cost
-
-# Gradient Descent algorithm
-def gradient_descent(X, y, theta, alpha, iterations):
-    m = len(y)
-    for _ in range(iterations):
-        gradient = (1 / m) * X.T.dot(X.dot(theta) - y)
-        theta = theta - alpha * gradient
-    return theta
-
-# Train the model
-theta = gradient_descent(X_b, y, theta, alpha, iterations)
-print("Theta values:", theta)
-
-# Predict profit for a given city population
-population = float(input("Enter city population: "))
-prediction = theta[0] + theta[1] * population
-print("Predicted Profit:", prediction)
-
-# Plot the data and regression line
-plt.scatter(X, y, label="Training Data")
-plt.plot(X, X_b.dot(theta), label="Regression Line")
-plt.xlabel("Population of City")
+data=pd.read_csv("C:/Users/acer/Downloads/50_Startups.csv")
+x=data["R&D Spend"].values
+y=data["Profit"].values
+x_mean=np.mean(x)
+x_std=np.std(x)
+x=(x-x_mean)/x_std
+w=0.0
+b=0.0
+alpha=0.01
+epochs=100
+n=len(x)
+losses=[]
+for _ in range(epochs):
+    y_hat=w*x+b
+    loss=np.mean((y_hat-y)**2)
+    losses.append(loss)
+    dw=(2/n)*np.sum((y_hat-y)*x)
+    db=(2/n)*np.sum(y_hat-y)
+    w-=alpha*dw
+    b-=alpha*db
+plt.figure(figsize=(12,5))
+plt.subplot(1,2,1)
+plt.plot(losses)
+plt.xlabel("Iterations")
+plt.ylabel("Loss (MSE)")
+plt.title("Loss vs Iterations")
+plt.subplot(1,2,2)
+plt.scatter(x,y)
+x_sorted=np.argsort(x)
+plt.plot(x[x_sorted], (w*x+b)[x_sorted], color='red')
+plt.xlabel("R&D Spend(scaled)")
 plt.ylabel("Profit")
-plt.legend()
+plt.title("Linear Regression Fit")
+plt.tight_layout()
 plt.show()
-
+print("Final weight (w):",w)
+print("Final bias (b):",b)
 ```
 
 ## Output:
 ![linear regression using gradient descent](sam.png)
 
-<img width="442" height="89" alt="Screenshot 2026-02-02 111848" src="https://github.com/user-attachments/assets/4d2ef814-21d6-476b-8f2a-f8a9b9e7f5b2" />
+<img width="1705" height="778" alt="Screenshot 2026-02-03 085928" src="https://github.com/user-attachments/assets/48c3345c-f498-41b7-a9e9-3433f303ef5d" />
 
 
 ## Result:
